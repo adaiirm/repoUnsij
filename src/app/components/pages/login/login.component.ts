@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgFor } from '@angular/common';
+import { AuthService } from '../../../services/auth-service.service';
+import { Router } from 'express';
 
 @Component({
   selector: 'app-login',
@@ -12,9 +14,11 @@ import { NgFor } from '@angular/common';
 })
 export class LoginComponent {
   loginData = {
-    email: "",
-    password: "",
+    correo: "",
+    contrasenia: "",
+  
   }
+  constructor(private authService: AuthService, private router: Router) {}
 
   carreras = [
     "Ingeniería en Desarrollo de Software y Sistemas Inteligentes",
@@ -25,7 +29,17 @@ export class LoginComponent {
   ]
 
   onSubmit() {
-    console.log("Login attempt:", this.loginData)
-    // Aquí iría la lógica de autenticación
+  console.log("Login attempt:", this.loginData);
+
+    this.authService.login(this.loginData).subscribe({
+      next: (response) => {
+        console.log("Login successful:", response);
+        // Redireccionar o mostrar mensaje de éxito
+      },
+      error: (error) => {
+        console.error("Login failed:", error);
+        // Mostrar mensaje de error al usuario
+      }
+    });
   }
 }
